@@ -19,6 +19,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import java.awt.ScrollPane;
+import java.awt.Scrollbar;
+import javax.swing.ListSelectionModel;
 
 public class Veterinaria extends JFrame {
 
@@ -42,7 +46,7 @@ public class Veterinaria extends JFrame {
 		});
 	}
 
-	public Veterinaria() {
+	public Veterinaria() throws SQLException {
 		
 		setTitle("Veterinaria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,8 +57,8 @@ public class Veterinaria extends JFrame {
 		pnlPrincipal.setLayout(null);
 		
 		JPanel pnlDatos = new JPanel();
-		pnlDatos.setBorder(new TitledBorder(null, "Datos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlDatos.setBounds(10, 11, 414, 168);
+		pnlDatos.setBorder(new TitledBorder(null, "Datos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlPrincipal.add(pnlDatos);
 		pnlDatos.setLayout(null);
 		
@@ -92,13 +96,16 @@ public class Veterinaria extends JFrame {
 		btnAgregar.setBounds(315, 134, 89, 23);
 		pnlDatos.add(btnAgregar);
 		
-		tblListadoMascotas = new JTable();
-		tblListadoMascotas.setBounds(10, 190, 414, 261);
-		pnlPrincipal.add(tblListadoMascotas);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 190, 414, 261);
+		pnlPrincipal.add(scrollPane);
 		
-		ModeloDeTabla = new DefaultTableModel();
+		tblListadoMascotas = new JTable();
+		tblListadoMascotas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(tblListadoMascotas);
+		tblListadoMascotas.setDefaultEditor(Object.class, null);
 		DAO AccesoDatos = new DAO();
-	
+		tblListadoMascotas.setModel((DefaultTableModel)AccesoDatos.SetearTabla(AccesoDatos.ListarMascotas()));
 		
 		btnAgregar.addActionListener(new ActionListener() {
 			
@@ -108,15 +115,17 @@ public class Veterinaria extends JFrame {
 				
 					Mascota unaMascota = new Mascota();
 					unaMascota.setearMascota(tboxNombre.getText(), tboxEdad.getText(), "Femenino");
-					DAO AccesoDatos = new DAO();
 					AccesoDatos.AgregarMascota(unaMascota); 
-					//tblListadoMascotas.setModel(AccesoDatos.SetearTabla(AccesoDatos.ListarMascotas()));
-							
+					tblListadoMascotas.setModel((DefaultTableModel)AccesoDatos.SetearTabla(AccesoDatos.ListarMascotas()));
+					tboxEdad.setText("");
+					tboxNombre.setText("");
 				
-			} catch (Exception e) {
-
-				JOptionPane.showMessageDialog(null, e.getMessage());
-			}
+				} 
+				
+				catch (Exception e) {
+				
+					JOptionPane.showMessageDialog(null, e.getMessage());
+				}
 					
 			}
 		});

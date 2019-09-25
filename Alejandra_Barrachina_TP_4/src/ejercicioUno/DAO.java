@@ -70,6 +70,7 @@ public class DAO {
 			while(TablaResultados.next()) {
 				
 				Mascota unaMascota = new Mascota();
+				unaMascota.setID(TablaResultados.getInt("id"));
 				unaMascota.setNombre(TablaResultados.getString("Nombre"));
 				unaMascota.setEdad(TablaResultados.getString("Edad"));
 				unaMascota.setSexo(TablaResultados.getString("Sexo"));
@@ -79,6 +80,19 @@ public class DAO {
 		return ListadoMascotas;
 	}
 	
-
+	public DefaultTableModel SetearTabla(ArrayList<Mascota>ListadoMascotas) {
+		
+		DefaultTableModel ModeloDeTabla = new DefaultTableModel();
+		ModeloDeTabla.setColumnIdentifiers(new Object[] {"Id","Nombre","Edad","Sexo"});
+		
+		for (Mascota mascota : ListadoMascotas) {
+			
+			ModeloDeTabla.addRow(new Object[] {mascota.getID(),mascota.getNombre(), mascota.getEdad(), mascota.getSexo()});
+		}
+		
+		return ModeloDeTabla;
+	}
+	
+	
 }
 

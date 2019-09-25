@@ -1,10 +1,13 @@
 package ejercicioUno;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import com.mysql.cj.xdevapi.Statement;
 
 public class DAO {
 
@@ -27,34 +30,55 @@ public class DAO {
 			
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
+		
 		return Conexion;
 	}
+	
 	
 	public void AgregarMascota(Mascota unaNuevaMascota) {
 		
 		try {
 			  
-			  DAO ConexionDB = new DAO();
-			  CallableStatement StoredProcedureAgregarMascota = ConexionDB.ConectarBaseDatos().prepareCall("CALL AgregarMascota(?,?,?,?)");
-			  StoredProcedureAgregarMascota.setInt(1,unaNuevaMascota.getID());
-			  StoredProcedureAgregarMascota.setString(2,unaNuevaMascota.getNombre());
-			  StoredProcedureAgregarMascota.setString(3,unaNuevaMascota.getEdad());
-			  StoredProcedureAgregarMascota.setString(4,unaNuevaMascota.getSexo());
+			  CallableStatement StoredProcedureAgregarMascota = ConectarBaseDatos().prepareCall("CALL AgregarMascota(?,?,?)");
+			  StoredProcedureAgregarMascota.setString(1,unaNuevaMascota.getNombre());
+			  StoredProcedureAgregarMascota.setString(2,unaNuevaMascota.getEdad());
+			  StoredProcedureAgregarMascota.setString(3,unaNuevaMascota.getSexo());
 			  StoredProcedureAgregarMascota.execute();
 		} 
 		
 		catch (Exception e) {
 			e.printStackTrace();
 		}  	
-	}	
+	}
+	
+	
+	public void EliminarMascota(Mascota MascotaEliminar) throws SQLException {
+			  
+		  CallableStatement StoredProcedureEliminarMascota = ConectarBaseDatos().prepareCall("CALL EliminarMascota(?)");
+		  StoredProcedureEliminarMascota.setInt(1,MascotaEliminar.getID());
+		  StoredProcedureEliminarMascota.execute(); 
+	}
 	 
-	public ArrayList<Mascota> ListarMascotas() {
+	
+	public ArrayList<Mascota> ListarMascotas() throws SQLException {
 		
 			ArrayList<Mascota> ListadoMascotas = new ArrayList<Mascota>();
+		    String Consulta = "SELECT * FROM Mascotas";
+		    java.sql.Statement EstablecerConsulta = ConectarBaseDatos().createStatement();
+		    ResultSet TablaResultados = EstablecerConsulta.executeQuery(Consulta);		
 			
+			while(TablaResultados.next()) {
+				
+				Mascota unaMascota = new Mascota();
+				unaMascota.setNombre(TablaResultados.getString("Nombre"));
+				unaMascota.setEdad(TablaResultados.getString("Edad"));
+				unaMascota.setSexo(TablaResultados.getString("Sexo"));
+				ListadoMascotas.add(unaMascota);
+			}
 			
-			
-			return ListadoMascotas;
+		return ListadoMascotas;
 	}
+	
+
 }
 

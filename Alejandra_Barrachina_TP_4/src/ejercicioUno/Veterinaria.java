@@ -7,13 +7,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
-
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class Veterinaria extends JFrame {
@@ -23,6 +27,7 @@ public class Veterinaria extends JFrame {
 	private JTextField tboxNombre;
 	private JTextField tboxEdad;
 	private JTable tblListadoMascotas;
+	private DefaultTableModel ModeloDeTabla;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -38,6 +43,7 @@ public class Veterinaria extends JFrame {
 	}
 
 	public Veterinaria() {
+		
 		setTitle("Veterinaria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 501);
@@ -90,19 +96,28 @@ public class Veterinaria extends JFrame {
 		tblListadoMascotas.setBounds(10, 190, 414, 261);
 		pnlPrincipal.add(tblListadoMascotas);
 		
+		ModeloDeTabla = new DefaultTableModel();
+		DAO AccesoDatos = new DAO();
+	
+		
 		btnAgregar.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent arg0) {
 			
-				Mascota unaMascota = new Mascota();
-				unaMascota.setID(3);
-				unaMascota.setEdad("20");
-				unaMascota.setNombre("Afro");
-				unaMascota.setSexo("Femenino");
+				try {
 				
-				DAO lala = new DAO();
-				lala.AgregarMascota(unaMascota);
+					Mascota unaMascota = new Mascota();
+					unaMascota.setearMascota(tboxNombre.getText(), tboxEdad.getText(), "Femenino");
+					DAO AccesoDatos = new DAO();
+					AccesoDatos.AgregarMascota(unaMascota); 
+					//tblListadoMascotas.setModel(AccesoDatos.SetearTabla(AccesoDatos.ListarMascotas()));
+							
 				
-			
+			} catch (Exception e) {
+
+				JOptionPane.showMessageDialog(null, e.getMessage());
+			}
+					
 			}
 		});
 	}

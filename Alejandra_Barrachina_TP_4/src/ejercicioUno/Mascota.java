@@ -32,6 +32,12 @@ public class Mascota {
 		Sexo = sexo;
 	}
 	
-	
+	public void setearMascota(String Nombre, String Edad, String Sexo) {
+		
+		this.Nombre = Nombre;
+		this.Edad = Edad;
+		this.Sexo = Sexo;
+		
+	}
 }
 

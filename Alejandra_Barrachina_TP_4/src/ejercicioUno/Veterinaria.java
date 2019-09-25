@@ -13,6 +13,8 @@ import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 
 import javax.swing.JTable;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Veterinaria extends JFrame {
 
@@ -87,5 +89,21 @@ public class Veterinaria extends JFrame {
 		tblListadoMascotas = new JTable();
 		tblListadoMascotas.setBounds(10, 190, 414, 261);
 		pnlPrincipal.add(tblListadoMascotas);
+		
+		btnAgregar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			
+				Mascota unaMascota = new Mascota();
+				unaMascota.setID(3);
+				unaMascota.setEdad("20");
+				unaMascota.setNombre("Afro");
+				unaMascota.setSexo("Femenino");
+				
+				DAO lala = new DAO();
+				lala.AgregarMascota(unaMascota);
+				
+			
+			}
+		});
 	}
 }

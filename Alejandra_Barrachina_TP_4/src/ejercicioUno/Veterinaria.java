@@ -16,6 +16,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JTable;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ public class Veterinaria extends JFrame {
 		
 		setTitle("Veterinaria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		ValidarSoloNumeros ValidarNumeros = new ValidarSoloNumeros();
+		ValidarSoloLetras ValidarLetras = new ValidarSoloLetras();
 		setBounds(100, 100, 450, 501);
 		pnlPrincipal = new JPanel();
 		pnlPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -68,8 +72,10 @@ public class Veterinaria extends JFrame {
 		tboxNombre.setBounds(140, 25, 159, 20);
 		pnlDatos.add(tboxNombre);
 		tboxNombre.setColumns(10);
+		tboxNombre.addKeyListener(ValidarLetras);
 		tboxEdad = new JTextField();
 		tboxEdad.setBounds(140, 61, 159, 20);
+		tboxEdad.addKeyListener(ValidarNumeros);
 		pnlDatos.add(tboxEdad);
 		tboxEdad.setColumns(10);
 		JLabel lblEdadl = new JLabel("Edad");
@@ -82,6 +88,7 @@ public class Veterinaria extends JFrame {
 		lblSexo.setBounds(46, 106, 46, 14);
 		pnlDatos.add(lblSexo);		
 		JRadioButton rdbtnHembra = new JRadioButton("Hembra");
+		rdbtnHembra.setSelected(true);
 		rdbtnHembra.setBounds(140, 102, 97, 23);
 		pnlDatos.add(rdbtnHembra);
 		JRadioButton rdbtnMacho = new JRadioButton("Macho");
@@ -107,7 +114,8 @@ public class Veterinaria extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 			
 				try {
-				
+					
+					Validar.CampoVacio(pnlDatos);
 					Mascota unaMascota = new Mascota();
 					unaMascota.setearMascota(tboxNombre.getText(), tboxEdad.getText(), Utilidades.RadioButtonSeleccionado(pnlDatos));
 					AccesoDatos.AgregarMascota(unaMascota); 
@@ -125,7 +133,7 @@ public class Veterinaria extends JFrame {
 		});
 		
 		tblListadoMascotas.addMouseListener(new MouseAdapter() {
-			@Override
+		
 			public void mouseClicked(MouseEvent e) {
 				
 				if(Utilidades.Confirmacion("¿Seguro que desea eliminar este registro?")==0) {
@@ -147,5 +155,31 @@ public class Veterinaria extends JFrame {
 				}
 			}
 		});
+		
 	}
+}
+
+class ValidarSoloNumeros extends KeyAdapter{
+	  
+	public void keyTyped(KeyEvent e) {
+		
+		char validar = e.getKeyChar();
+		if(Character.isLetter(validar)) {
+			e.consume();
+			JOptionPane.showMessageDialog(null, "Solo se permiten numeros");
+		} 
+	}
+}
+
+class ValidarSoloLetras extends KeyAdapter{
+  
+public void keyTyped(KeyEvent e) {
+	
+	char validar = e.getKeyChar();
+	if(!Character.isLetter(validar)) {
+		e.consume();
+		JOptionPane.showMessageDialog(null, "Solo se permiten letras");
+	} 
+}
+
 }
